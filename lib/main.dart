@@ -30,6 +30,10 @@ class FixedTabLayout extends AppRoute with RouteLayout<AppRoute> {
               icon: Icon(Icons.settings),
               label: 'Settings',
             ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.tab),
+              label: 'State Driven',
+            ),
           ],
         ),
       ),
@@ -151,6 +155,104 @@ class SettingsRoute extends AppRoute {
   Uri toUri() => Uri.parse('/settings');
 }
 
+class StateDrivenDynamicRoute extends AppRoute with RouteQueryParameters {
+  StateDrivenDynamicRoute({String? dynamicTabOpen}) {
+    queryNotifier.value = {
+      if (dynamicTabOpen != null) 'dynamicTabOpen': dynamicTabOpen,
+    };
+  }
+
+  @override
+  Type? get layout => FixedTabLayout;
+
+  @override
+  Widget build(TabCoordinator coordinator, BuildContext context) {
+    return StateDrivenDynamicTabView(coordinator, queryNotifier);
+  }
+
+  @override
+  final ValueNotifier<Map<String, String>> queryNotifier = ValueNotifier({});
+
+  @override
+  Uri toUri() =>
+      Uri.parse('/state-driven-dynamic-tab').replace(queryParameters: queries);
+}
+
+class StateDrivenDynamicTabView extends StatefulWidget {
+  const StateDrivenDynamicTabView(
+    this.coordinator,
+    this.queryNotifier, {
+    super.key,
+  });
+
+  final TabCoordinator coordinator;
+  final ValueNotifier<Map<String, String>> queryNotifier;
+
+  @override
+  State<StateDrivenDynamicTabView> createState() =>
+      _StateDrivenDynamicTabViewState();
+}
+
+class _StateDrivenDynamicTabViewState extends State<StateDrivenDynamicTabView> {
+  final List<String> _tabs = [];
+  String? activeTab;
+
+  void _updateTabs() {
+    final query = widget.queryNotifier.value;
+    final tab = query['dynamicTabOpen'];
+    if (tab != null) {
+      final index = _tabs.indexOf(tab);
+      if (index == -1) {
+        setState(() {
+          _tabs.add(tab);
+          activeTab = tab;
+        });
+      } else {
+        setState(() {
+          activeTab = tab;
+        });
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    widget.queryNotifier.addListener(_updateTabs);
+  }
+
+  @override
+  void dispose() {
+    widget.queryNotifier.removeListener(_updateTabs);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            for (final tab in _tabs)
+              GestureDetector(
+                onTap: () => widget.coordinator.navigate(
+                  StateDrivenDynamicRoute(dynamicTabOpen: tab),
+                ),
+                child: Container(
+                  height: 40,
+                  padding: EdgeInsets.all(8),
+                  color: activeTab == tab ? Colors.blue : Colors.grey,
+                  child: Text(tab),
+                ),
+              ),
+          ],
+        ),
+        Expanded(child: Center(child: Text(activeTab ?? 'No tab selected'))),
+      ],
+    );
+  }
+}
+
 class IndexRoute extends AppRoute with RouteRedirect {
   @override
   Widget build(
@@ -167,7 +269,7 @@ class IndexRoute extends AppRoute with RouteRedirect {
 
 class TabCoordinator extends Coordinator<AppRoute> {
   late final homeTab = IndexedStackPath<AppRoute>.createWith(
-    [TabLayout(), SettingsRoute()],
+    [TabLayout(), SettingsRoute(), StateDrivenDynamicRoute()],
     coordinator: this,
     label: 'home',
   );
@@ -192,6 +294,9 @@ class TabCoordinator extends Coordinator<AppRoute> {
       [] => IndexRoute(),
       ['first', 'home'] => HomeFirstTab(),
       ['first', 'detail', final id] => DetailFirstTab(id: int.parse(id)),
+      ['state-driven-dynamic-tab'] => StateDrivenDynamicRoute(
+        dynamicTabOpen: uri.queryParameters['dynamicTabOpen'],
+      ),
       ['settings'] => SettingsRoute(),
       _ => HomeFirstTab(),
     };
