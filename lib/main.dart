@@ -15,7 +15,7 @@ class FixedTabLayout extends AppRoute with RouteLayout<AppRoute> {
       coordinator.homeTab;
 
   @override
-  Widget build(covariant TabCoordinator coordinator, BuildContext context) {
+  Widget build(TabCoordinator coordinator, BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Fixed Tab Layout')),
       body: buildPath(coordinator),
@@ -46,7 +46,7 @@ class TabLayout extends AppRoute with RouteLayout<TabLayout> {
   Type? get layout => FixedTabLayout;
 
   @override
-  TabsPath<TabRoute> resolvePath(covariant TabCoordinator coordinator) =>
+  TabsPath<TabRoute> resolvePath(TabCoordinator coordinator) =>
       coordinator.tabsPath;
 }
 
@@ -55,7 +55,7 @@ class HomeFirstTab extends TabRoute {
   Type? get layout => TabLayout;
 
   @override
-  Widget build(covariant TabCoordinator coordinator, BuildContext context) {
+  Widget build(TabCoordinator coordinator, BuildContext context) {
     final path =
         resolveLayout(coordinator)!.resolvePath(coordinator) as TabsPath;
     return Center(

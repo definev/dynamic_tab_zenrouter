@@ -20,6 +20,7 @@ class TabsPathModel<T> {
 class TabsPath<T extends RouteTab> extends StackPath<T>
     with
         StackMutatable<T>,
+        StackNavigatable<T>,
         RestorablePath<T, Map<String, dynamic>, TabsPathModel<T>> {
   TabsPath._(super.stack, {super.debugLabel, super.coordinator});
 
@@ -132,6 +133,17 @@ class TabsPath<T extends RouteTab> extends StackPath<T>
       'stack': [for (final route in stack) RouteTarget.serialize(route)],
       'activeIndex': _activeIndex,
     };
+  }
+
+  @override
+  Future<void> navigate(T route) async {
+    final index = stack.indexOf(route);
+    if (index != -1) {
+      _activeIndex = index;
+      notifyListeners();
+      return;
+    }
+    push(route);
   }
 }
 
