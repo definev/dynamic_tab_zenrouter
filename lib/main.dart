@@ -264,7 +264,7 @@ class IndexRoute extends AppRoute with RouteRedirect {
   Uri toUri() => Uri.parse('/');
 
   @override
-  FutureOr<RouteTarget?> redirect() => HomeFirstTab();
+  FutureOr<RouteTarget> redirect() => HomeFirstTab();
 }
 
 class TabCoordinator extends Coordinator<AppRoute> {
