@@ -204,10 +204,10 @@ packages:
     dependency: "direct main"
     description:
       name: zenrouter
-      sha256: "93eb86074409774dba52d646bddd602e2055ff6303299b24b93a7c63f8985b88"
+      sha256: "2b0334ec1b465d4b990ca6c2bbb46be5f3056a29fa4781b9584f66abcc0d6fdc"
       url: "https://pub.dev"
     source: hosted
-    version: "0.4.13"
+    version: "0.4.17"
 sdks:
   dart: ">=3.10.0 <4.0.0"
   flutter: ">=3.18.0-18.0.pre.54"

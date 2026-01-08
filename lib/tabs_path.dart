@@ -99,9 +99,9 @@ class TabsPath<T extends RouteTab> extends StackPath<T>
   }
 
   @override
-  void remove(T element) {
+  void remove(T element, {bool discard = true}) {
     final index = stack.indexOf(element);
-    super.remove(element);
+    super.remove(element, discard: discard);
     if (index == _activeIndex && index < stack.length) return;
     _activeIndex ??= stack.length - 1;
     if (_activeIndex! >= stack.length) _activeIndex = stack.length - 1;

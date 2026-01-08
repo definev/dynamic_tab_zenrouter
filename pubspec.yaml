@@ -1,6 +1,6 @@
 name: dynamic_tab_zenrouter
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0+1
 
 environment:
@@ -9,7 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  zenrouter: ^0.4.13
+  zenrouter: ^0.4.17
 
 dev_dependencies:
   flutter_test:
